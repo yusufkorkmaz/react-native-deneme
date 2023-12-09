@@ -42,6 +42,9 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         loadCartData();
     }, []);
 
+    useEffect(() => {
+        saveCartData();
+    }, [cartItems]);
 
     const addToCart = (product: ItemProps) => {
         const updatedCart = [...cartItems];

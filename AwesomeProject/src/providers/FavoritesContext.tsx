@@ -40,6 +40,10 @@ export const FavoritesProvider = ({ children }: FavoritesProviderProps) => {
         loadFavoriteData();
     }, []);
 
+    useEffect(() => {
+        saveFavoriteData();
+    }, [favoriteItems]);
+
     const addToFavorites = (newItem: ItemProps) => {
         if (!favoriteItems.some(item => item.id === newItem.id)) {
             const updatedFavorites = [...favoriteItems, newItem];
