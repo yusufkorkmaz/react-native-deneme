@@ -1,11 +1,10 @@
-// FavoritesContext.tsx
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ItemProps } from '../types';
 
 export type FavoritesContextType = {
     favoriteItems: ItemProps[];
-    addToFavorites: (product: ItemProps) => void;
+    addToFavorites: (item: ItemProps) => void;
     removeFromFavorites: (productId: string) => void;
 };
 
@@ -41,15 +40,28 @@ export const FavoritesProvider = ({ children }: FavoritesProviderProps) => {
         loadFavoriteData();
     }, []);
 
-    const addToFavorites = (item: ItemProps) => {
-        setFavoriteItems([...favoriteItems, item]);
-        saveFavoriteData();
+    const addToFavorites = (newItem: ItemProps) => {
+        if (!favoriteItems.some(item => item.id === newItem.id)) {
+            const updatedFavorites = [...favoriteItems, newItem];
+            setFavoriteItems(updatedFavorites);
+            saveFavoriteData();
+        }
     };
 
-    const removeFromFavorites = (itemId: string) => {
-        const updatedFavorites = favoriteItems.filter(item => item.id !== itemId);
-        setFavoriteItems(updatedFavorites);
-        saveFavoriteData();
+    const removeFromFavorites = async (itemId: string) => {
+        try {
+            const favouritesData = await AsyncStorage.getItem('@favoriteItems');
+            let updatedFavouriteItems = [];
+
+            if (favouritesData !== null) {
+                const favouritesArray = JSON.parse(favouritesData);
+                updatedFavouriteItems = favouritesArray.filter((item: ItemProps) => item.id !== itemId);
+                await AsyncStorage.setItem('@favoriteItems', JSON.stringify(updatedFavouriteItems));
+            }
+            setFavoriteItems(updatedFavouriteItems);
+        } catch (error) {
+            console.error('Error updating favourites in AsyncStorage:', error);
+        }
     };
 
     const favoritesContextValue: FavoritesContextType = {

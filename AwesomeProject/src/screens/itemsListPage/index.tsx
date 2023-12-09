@@ -5,6 +5,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/core';
 import { ItemProps, RootStackParamList } from '../../types';
 import { CartContext, CartContextType } from '../../providers/CartContext';
+import { FavoritesContext, FavoritesContextType } from '../../providers/FavoritesContext';
 
 const ItemsListPage = () => {
     const [products, setProducts] = useState<ItemProps[]>([{
@@ -16,7 +17,7 @@ const ItemsListPage = () => {
         "model": "1",
         "brand": "Cadillac",
         "id": "1"
-    },{
+    }, {
         "createdAt": "2023-07-16T17:26:39.774Z",
         "name": "Smart Golf 2",
         "image": "https://loremflickr.com/640/480/nightlife",
@@ -25,7 +26,7 @@ const ItemsListPage = () => {
         "model": "2",
         "brand": "Cadillac",
         "id": "2"
-    },{
+    }, {
         "createdAt": "2023-07-16T17:26:39.774Z",
         "name": "Smart Golf 3",
         "image": "https://loremflickr.com/640/480/nightlife",
@@ -59,11 +60,24 @@ const ItemsListPage = () => {
     }, []);
 
     const cartContext = useContext<CartContextType | undefined>(CartContext);
+    const favoritesContext = useContext<FavoritesContextType | undefined>(FavoritesContext);
 
+    const handleAddToFavorites = (item: ItemProps) => {
+        favoritesContext?.addToFavorites(item);
+    };
+
+    const handleRemoveFromFavorites = (item: ItemProps) => {
+        favoritesContext?.removeFromFavorites(item.id);
+    };
+    
     const handleAddToCart = (item: ItemProps) => {
         cartContext?.addToCart(item);
     };
-
+    
+    const isFavourite = (item: ItemProps) => {
+        return favoritesContext?.favoriteItems.some(favItem => favItem.id === item.id);
+    };
+    
     const renderItem = ({ item }: { item: ItemProps }) => (
         <TouchableOpacity onPress={() => navigation.navigate('ItemDetailsPage', { item })}>
             <View style={styles.card}>
@@ -72,6 +86,12 @@ const ItemsListPage = () => {
                 <Text style={styles.price}>{`${item.price} ₺`}</Text>
                 <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.button}>
                     <Text style={styles.buttonText}>Add to Cart</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => isFavourite(item) ? handleRemoveFromFavorites(item) : handleAddToFavorites(item)}
+                    style={styles.button}
+                >
+                    <Text style={styles.buttonText}>{isFavourite(item) ? 'Remove from Favorites' : 'Add to Favorites'}</Text>
                 </TouchableOpacity>
             </View>
         </TouchableOpacity>
@@ -103,6 +123,9 @@ const ItemsListPage = () => {
 const styles = StyleSheet.create({
     loader: {
         marginVertical: 20,
+    },
+    favouriteButton: {
+        padding: 10,
     },
     container: {
         flex: 1,

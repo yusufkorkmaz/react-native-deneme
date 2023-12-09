@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import ItemDetailsPage from './screens/itemDetailsPage';
 import ItemsListPage from './screens/itemsListPage';
 import CartPage from './screens/cartPage';
-import FavouritesPage from './screens/favouritesPage';
+import FavoritesPage from './screens/favoritesPage';
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -35,7 +35,7 @@ const MainNavigation = () => {
     <Tab.Navigator>
       <Tab.Screen name="Home" options={() => ({ headerShown: false })} component={HomeStackPage} />
       <Tab.Screen name="Cart" component={CartPage} />
-      <Tab.Screen name="Favourites" component={FavouritesPage} />
+      <Tab.Screen name="Favorites" component={FavoritesPage} />
     </Tab.Navigator>
   );
 };
