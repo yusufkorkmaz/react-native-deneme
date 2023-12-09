@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { SafeAreaView, } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import BottomTabBar from './src/components/bottomBar';
+import MainNavigation from './src/mainNavigation';
 export default function App() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <NavigationContainer>
-        <BottomTabBar />
+        <MainNavigation />
       </NavigationContainer>
     </SafeAreaView>
   );

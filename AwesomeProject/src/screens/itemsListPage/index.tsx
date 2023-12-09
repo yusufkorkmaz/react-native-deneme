@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import axios from 'axios';
-
-type ItemProps = {
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/core'; type ItemProps = {
     createdAt: string;
     name: string;
     image: string;
@@ -11,6 +11,10 @@ type ItemProps = {
     model: string;
     brand: string;
     id: string;
+};
+
+type RootStackParamList = {
+    ItemDetailsPage: { itemId: string } | undefined;
 };
 
 const ItemsListPage = () => {
@@ -26,6 +30,8 @@ const ItemsListPage = () => {
     },]);
     const [page, setPage] = useState<number>(1);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
     const fetchProducts = () => {
         if (isLoading) return;
@@ -46,14 +52,16 @@ const ItemsListPage = () => {
     }, []);
 
     const renderItem = ({ item }: { item: ItemProps }) => (
-        <View style={styles.card}>
-            <Image source={{ uri: item.image }} style={styles.image} />
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.price}>{`${item.price} ₺`}</Text>
-            <TouchableOpacity style={styles.button}>
-                <Text style={styles.buttonText}>Add to Cart</Text>
-            </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={() => navigation.navigate('ItemDetailsPage', { itemId: item.id })}>
+            <View style={styles.card}>
+                <Image source={{ uri: item.image }} style={styles.image} />
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.price}>{`${item.price} ₺`}</Text>
+                <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText}>Add to Cart</Text>
+                </TouchableOpacity>
+            </View>
+        </TouchableOpacity>
     );
 
     const handleLoadMore = () => {
