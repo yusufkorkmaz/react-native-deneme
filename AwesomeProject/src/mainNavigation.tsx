@@ -13,7 +13,10 @@ function HomeStackPage() {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
-        name="E-Market"
+        name="HomeStack"
+        options={{
+          headerTitle: 'E-Market',
+        }}
         component={ItemsListPage}
       />
       <HomeStack.Screen
@@ -22,7 +25,6 @@ function HomeStackPage() {
           headerTitle: 'Item Details',
         }}
         component={ItemDetailsPage}
-
       />
     </HomeStack.Navigator>
   );
@@ -31,7 +33,7 @@ function HomeStackPage() {
 const MainNavigation = () => {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="E-Market" options={() => ({ headerShown: false })} component={HomeStackPage} />
+      <Tab.Screen name="Home" options={() => ({ headerShown: false })} component={HomeStackPage} />
       <Tab.Screen name="Cart" component={CartPage} />
       <Tab.Screen name="Favourites" component={FavouritesPage} />
     </Tab.Navigator>
