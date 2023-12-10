@@ -6,7 +6,10 @@ import ItemsListPage from './screens/itemsListPage';
 import CartPage from './screens/cartPage';
 import FavoritesPage from './screens/favoritesPage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useTheme, } from 'react-native-paper';
+import { Text } from 'react-native-paper';
+import { StyleSheet } from 'react-native';
+import { CartContext, CartContextType } from './providers/CartContext';
+import { useContext, useEffect, useState } from 'react';
 
 const Tab = createBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -33,7 +36,13 @@ function HomeStackPage() {
 }
 
 const MainNavigation = () => {
-  const theme = useTheme();
+  const cartContext = useContext<CartContextType | undefined>(CartContext);
+  const [cartItemsLength, setCartItemsLength] = useState(cartContext?.cartItems.length ?? 0);
+
+  useEffect(() => {
+    if (!cartContext) return;
+    setCartItemsLength(cartContext.cartItems.length);
+  }, [cartContext?.cartItems]);
 
   return (
     <Tab.Navigator
@@ -57,7 +66,14 @@ const MainNavigation = () => {
         component={CartPage}
         options={{
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="cart" color={color} size={26} />
+            <>
+              {
+                (cartItemsLength && cartItemsLength > 0) ?
+                  <Text style={styles.itemInCartCountText}>{cartItemsLength ?? ''}</Text> :
+                  null
+              }
+              <MaterialCommunityIcons name="cart" color={color} size={26} />
+            </>
           ),
         }}
       />
@@ -74,5 +90,21 @@ const MainNavigation = () => {
 
   );
 };
+
+const styles = StyleSheet.create({
+  itemInCartCountText: {
+    position: 'absolute',
+    top: -8,
+    right: 45,
+    backgroundColor: '#FF6000',
+    borderRadius: 50,
+    width: 18,
+    height: 18,
+    textAlign: 'center',
+    color: '#fff',
+    fontSize: 12,
+    lineHeight: 18,
+  },
+});
 
 export default MainNavigation;

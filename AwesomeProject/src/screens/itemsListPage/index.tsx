@@ -48,8 +48,6 @@ const ItemsListPage = () => {
     const [page, setPage] = useState<number>(1);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-
     const [searchQuery, setSearchQuery] = useState<string>('');
     const onChangeSearch = (query: string) => setSearchQuery(query);
     const filteredProducts = products.filter(item =>
