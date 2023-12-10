@@ -4,6 +4,8 @@ import { CartContext, CartContextType } from '../../providers/CartContext';
 import { ItemProps, RootStackParamList } from '../../types';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { IconButton } from 'react-native-paper';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const CartPage: React.FC = () => {
     const cartContext = useContext<CartContextType | undefined>(CartContext);
@@ -25,16 +27,16 @@ const CartPage: React.FC = () => {
                     <Text style={styles.name}>{item.name}</Text>
                     <Text style={styles.price}>{`${item.price} ₺`}</Text>
                 </View>
-                <View>
+                <View style={styles.countSection}>
                     <TouchableOpacity onPress={() => increaseItemCount(item.id)}>
-                        <Text>+</Text>
+                        <IconButton style={styles.iconButton} iconColor='white' icon="plus" size={14} />
                     </TouchableOpacity>
-                    <Text style={styles.price}>{item.itemCountInCart}</Text>
+                    <Text style={styles.count}>{item.itemCountInCart}</Text>
                     <TouchableOpacity onPress={() => decreaseItemCount(item.id)}>
                         {
                             item.itemCountInCart && item.itemCountInCart > 1
-                                ? <Text>-</Text>
-                                : <Text>Sil</Text>
+                                ? <IconButton style={styles.iconButton} icon="minus" iconColor='white' size={14} />
+                                : <IconButton style={styles.deleteIconButton} icon="delete" iconColor='white' size={14} />
                         }
                     </TouchableOpacity>
                 </View>
@@ -44,43 +46,58 @@ const CartPage: React.FC = () => {
 
 
     return (
-        <>
+        <View style={styles.container}>
+            {
+                cartContext?.cartItems.length === 0 && <Text style={styles.noItemText}>No Item</Text>
+            }
             <FlatList
                 data={cartContext?.cartItems}
                 renderItem={renderItem}
                 keyExtractor={(item: ItemProps) => item.id}
             />
-
             {
-                cartContext?.cartItems.length === 0
-                    ? <Text style={{ textAlign: 'center' }}>Sepetinizde ürün bulunmamaktadır.</Text>
-                    : <TouchableOpacity
-                        onPress={() => { }}
-                        style={styles.button}
-                    >
-                        <Text style={styles.buttonText}>Complete</Text>
-                    </TouchableOpacity>
+                cartContext && cartContext.cartItems.length > 0 &&
+                <TouchableOpacity onPress={() => { }} style={styles.completeButton}>
+                    <View></View>
+                    <Text style={styles.completeButtonText}>Complete</Text>
+                    <MaterialCommunityIcons name="arrow-right" size={32} color="white" />
+                </TouchableOpacity>
             }
-
-
-        </>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
-    loader: {
-        marginVertical: 20,
-    },
     container: {
         flex: 1,
         paddingHorizontal: 10,
         backgroundColor: '#f5f5f5',
     },
+    iconButton: {
+        backgroundColor: '#FF6000',
+        borderRadius: 6,
+    },
+    deleteIconButton: {
+        backgroundColor: '#FF0022',
+        borderRadius: 6,
+    },
+    countSection: {
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    loader: {
+        marginVertical: 20,
+    },
+    noItemText: {
+        textAlign: 'center',
+        marginVertical: 20,
+        fontSize: 24,
+    },
     card: {
         flex: 1,
         flexDirection: 'row',
         margin: 10,
-        padding: 10,
+        paddingHorizontal: 20,
         borderRadius: 10,
         backgroundColor: '#ffffff',
         alignItems: 'center',
@@ -102,15 +119,33 @@ const styles = StyleSheet.create({
         color: '#333',
         marginBottom: 5,
     },
+    count: {
+        fontSize: 24,
+        color: '#000',
+        marginBottom: 5,
+    },
     button: {
-        backgroundColor: '#007bff',
+        backgroundColor: '#FF6000',
         padding: 10,
         borderRadius: 5,
         marginVertical: 5,
     },
-    buttonText: {
-        color: '#ffffff',
-        fontSize: 16,
+    completeButton: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 10,
+        backgroundColor: '#FF6000',
+        textAlign: 'center',
+        marginRight: 10,
+        borderRadius: 12,
+        marginBottom: 10,
+    },
+    completeButtonText: {
+        color: '#fff',
+        textAlign: 'center',
+        fontSize: 24,
     },
 });
 export default CartPage;

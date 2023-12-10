@@ -1,65 +1,31 @@
 import React, { useContext } from 'react';
-import { Text, FlatList, TouchableOpacity, Image, View, StyleSheet, Button } from 'react-native';
-import { ItemProps, RootStackParamList } from '../../types';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { FlatList, StyleSheet, Text } from 'react-native';
+import { ItemProps } from '../../types';
 import { FavoritesContext, FavoritesContextType } from '../../providers/FavoritesContext';
-import { CartContext, CartContextType } from '../../providers/CartContext';
+import Item from '../../components/item';
 
 const FavoritesPage: React.FC = () => {
     const favoritesContext = useContext<FavoritesContextType | undefined>(FavoritesContext);
-    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-    const cartContext = useContext<CartContextType | undefined>(CartContext);
- 
-    const handleAddToFavorites = (item: ItemProps) => {
-        favoritesContext?.addToFavorites(item);
-    };
-
-    const handleRemoveFromFavorites = (item: ItemProps) => {
-        favoritesContext?.removeFromFavorites(item.id);
-    };
-
-    const handleAddToCart = (item: ItemProps) => {
-        cartContext?.addToCart(item);
-    };
-
-    const isFavourite = (item: ItemProps) => {
-        return favoritesContext?.favoriteItems.some(favItem => favItem.id === item.id);
-    };
 
     const renderItem = ({ item }: { item: ItemProps }) => (
-        <TouchableOpacity onPress={() => navigation.navigate('ItemDetailsPage', { item })}>
-            <View style={styles.card}>
-                <Image source={{ uri: item.image }} style={styles.image} />
-                <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.price}>{`${item.price} ₺`}</Text>
-                <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.button}>
-                    <Text style={styles.buttonText}>Add to Cart</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => isFavourite(item) ? handleRemoveFromFavorites(item) : handleAddToFavorites(item)}
-                    style={styles.button}
-                >
-                    <Text style={styles.buttonText}>{isFavourite(item) ? 'Remove from Favorites' : 'Add to Favorites'}</Text>
-                </TouchableOpacity>
-            </View>
-        </TouchableOpacity>
+        <Item item={item} />
     );
 
     return (
         <>
+            {
+                favoritesContext?.favoriteItems.length === 0 && <Text style={styles.noItemText}>No Item</Text>
+            }
             <FlatList
                 data={favoritesContext?.favoriteItems}
                 renderItem={renderItem}
-                keyExtractor={(item: ItemProps) => item.id}
+                keyExtractor={item => item.id}
+                numColumns={2}
+                initialNumToRender={12}
+                onEndReachedThreshold={0.5}
             />
-
-            {
-                favoritesContext?.favoriteItems.length === 0
-                    ? <Text style={{ textAlign: 'center' }}>Favorilerinizde ürün bulunmamaktadır.</Text>
-                    : null
-            }
         </>
+
     );
 };
 
@@ -72,8 +38,11 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        paddingHorizontal: 10,
-        backgroundColor: '#f5f5f5',
+    },
+    noItemText: {
+        textAlign: 'center',
+        marginVertical: 20,
+        fontSize: 24,
     },
     card: {
         flex: 1,
