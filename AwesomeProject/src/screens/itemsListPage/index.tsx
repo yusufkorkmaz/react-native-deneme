@@ -22,8 +22,25 @@ const ItemsListPage = () => {
     const itemsPerPage = 12;
 
     useEffect(() => {
-        fetchProducts();
-    }, [page]);
+        if (searchQuery) {
+            searchProducts();
+        } else {
+            fetchProducts();
+        }
+    }, [searchQuery, page]);
+
+    const searchProducts = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch(`https://5fc9346b2af77700165ae514.mockapi.io/products?search=${searchQuery}`);
+            const data = await response.json();
+            setProducts(data);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const fetchProducts = async () => {
         setIsLoading(true);
@@ -130,7 +147,7 @@ const ItemsListPage = () => {
                 numColumns={2}
                 initialNumToRender={12}
                 onEndReachedThreshold={0.1}
-                onEndReached={handleLoadMore}
+                onEndReached={searchQuery ? null : handleLoadMore}
                 ListFooterComponent={renderFooter}
             />
             {renderFilterModal()}
