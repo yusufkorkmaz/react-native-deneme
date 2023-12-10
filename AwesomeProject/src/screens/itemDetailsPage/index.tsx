@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import axios from 'axios';
 import { ItemDetailsPageProps, ItemProps } from '../../types';
 import { Button } from 'react-native-paper';
 import { CartContext, CartContextType } from '../../providers/CartContext';

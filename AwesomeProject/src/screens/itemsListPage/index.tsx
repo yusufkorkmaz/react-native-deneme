@@ -9,7 +9,7 @@ const ItemsListPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [filterModalVisible, setFilterModalVisible] = useState(false);
-    const [value, setValue] = React.useState('lowToHigh');
+    const [value, setValue] = useState('');
 
     const onChangeSearch = (query: string) => setSearchQuery(query);
     const toggleFilterModal = () => setFilterModalVisible(!filterModalVisible);
@@ -129,6 +129,21 @@ const ItemsListPage = () => {
         </Modal>
     );
 
+    const selectSortedCategory = () => {
+        switch (value) {
+            case 'lowToHigh':
+                return 'Price low to high';
+            case 'highToLow':
+                return 'Price high to low';
+            case 'newToOld':
+                return 'New to old';
+            case 'oldToNew':
+                return 'Old to new';
+            default:
+                return 'No sort selected';
+        }
+    }
+
     return (
         <>
             <View style={styles.searchBarAndFilterButtonSection}>
@@ -140,6 +155,9 @@ const ItemsListPage = () => {
                 />
                 <IconButton iconColor='grey' icon="filter-outline" size={40} onPress={toggleFilterModal} />
             </View>
+            {
+                value != '' ? <Text>Sorted By: {selectSortedCategory()}</Text> : null
+            }
             <FlatList
                 data={filteredProducts}
                 renderItem={renderItem}
