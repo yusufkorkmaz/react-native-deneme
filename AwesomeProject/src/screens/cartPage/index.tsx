@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Text, FlatList, TouchableOpacity, Image, View, StyleSheet } from 'react-native';
 import { CartContext, CartContextType } from '../../providers/CartContext';
 import { ItemProps, RootStackParamList } from '../../types';
@@ -124,14 +124,15 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     name: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
-        marginVertical: 5,
+        margin: 5,
+        color: '#333',
     },
     price: {
-        fontSize: 14,
-        color: '#333',
-        marginBottom: 5,
+        fontSize: 20,
+        marginRight: 20,
+        textAlign: 'right',
     },
     count: {
         fontSize: 24,

@@ -16,7 +16,16 @@ const HomeStack = createStackNavigator();
 
 function HomeStackPage() {
   return (
-    <HomeStack.Navigator>
+    <HomeStack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#FF6000',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}>
       <HomeStack.Screen
         name="HomeStack"
         options={{
@@ -49,6 +58,13 @@ const MainNavigation = () => {
       screenOptions={{
         tabBarActiveTintColor: '#FF6000',
         tabBarInactiveTintColor: 'gray',
+        headerStyle: {
+          backgroundColor: '#FF6000',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
       }}
     >
       <Tab.Screen

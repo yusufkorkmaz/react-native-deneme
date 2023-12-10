@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
     searchBar: {
         margin: 10,
         borderRadius: 5,
+        backgroundColor: '#ffffff',
     },
     favouriteButton: {
         padding: 10,
