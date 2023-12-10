@@ -110,8 +110,10 @@ const MainNavigation = () => {
 const styles = StyleSheet.create({
   itemInCartCountText: {
     position: 'absolute',
-    top: -8,
-    right: 45,
+    top: 0,
+    zIndex: 1,
+    right: '50%',
+    left: '50%',
     backgroundColor: '#FF6000',
     borderRadius: 50,
     width: 18,
