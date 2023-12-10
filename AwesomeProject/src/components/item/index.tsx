@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
 
     card: {
         width: windowSize.width * 0.45,
-        height: windowSize.height * 0.3,
+        height: windowSize.height < 500 ? windowSize.height * 0.3 : windowSize.height * 0.45,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',

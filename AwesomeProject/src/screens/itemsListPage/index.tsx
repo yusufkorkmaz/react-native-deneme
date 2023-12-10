@@ -1,49 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, FlatList, ActivityIndicator, Modal, View, Button } from 'react-native';
-import axios from 'axios';
 import { ItemProps } from '../../types';
 import Item from '../../components/item';
 import { IconButton, RadioButton, Searchbar, Text } from 'react-native-paper';
 
 const ItemsListPage = () => {
-    const [products, setProducts] = useState<ItemProps[]>([{
-        "createdAt": "2021-07-16T17:26:39.774Z",
-        "name": "iPhone 15 asdasd asd asda asdsasd",
-        "image": "https://loremflickr.com/640/480/nightlife",
-        "price": "1.00",
-        "description": "Architecto maiores culpa similique numquam veniam delectus sequi sint illum. Aliquam sunt magnam sunt dolore sint iste tempore facilis explicabo. Eius totam eius corporis earum expedita ad nihil voluptatibus sint. Quae at quibusdam nostrum. Omnis voluptatum tenetur praesentium quibusdam accusamus. Iusto quod blanditiis.\nItaque aspernatur provident. Aliquam sint dolorum adipisci odio. Soluta hic fugit magnam quo. Omnis cum culpa et magni autem qui tenetur.\nEius soluta aliquam quo odio inventore et. In assumenda molestias recusandae excepturi voluptate ut pariatur. Nobis fugit omnis quidem nesciunt. Molestias odio dignissimos esse rem eveniet tempora distinctio autem ipsa. Laboriosam ex nostrum rerum maxime. Debitis perferendis rem officia alias commodi et.",
-        "model": "1",
-        "brand": "Cadillac",
-        "id": "1"
-    }, {
-        "createdAt": "2022-07-16T17:26:39.774Z",
-        "name": "iPhone 15 Pro",
-        "image": "https://loremflickr.com/640/480/nightlife",
-        "price": "2.00",
-        "description": "Architecto maiores culpa similique numquam veniam delectus sequi sint illum. Aliquam sunt magnam sunt dolore sint iste tempore facilis explicabo. Eius totam eius corporis earum expedita ad nihil voluptatibus sint. Quae at quibusdam nostrum. Omnis voluptatum tenetur praesentium quibusdam accusamus. Iusto quod blanditiis.\nItaque aspernatur provident. Aliquam sint dolorum adipisci odio. Soluta hic fugit magnam quo. Omnis cum culpa et magni autem qui tenetur.\nEius soluta aliquam quo odio inventore et. In assumenda molestias recusandae excepturi voluptate ut pariatur. Nobis fugit omnis quidem nesciunt. Molestias odio dignissimos esse rem eveniet tempora distinctio autem ipsa. Laboriosam ex nostrum rerum maxime. Debitis perferendis rem officia alias commodi et.",
-        "model": "2",
-        "brand": "Cadillac",
-        "id": "2"
-    }, {
-        "createdAt": "2023-07-16T17:26:39.774Z",
-        "name": "Samsung Galaxy S20",
-        "image": "https://loremflickr.com/640/480/nightlife",
-        "price": "3.00",
-        "description": "Architecto maiores culpa similique numquam veniam delectus sequi sint illum. Aliquam sunt magnam sunt dolore sint iste tempore facilis explicabo. Eius totam eius corporis earum expedita ad nihil voluptatibus sint. Quae at quibusdam nostrum. Omnis voluptatum tenetur praesentium quibusdam accusamus. Iusto quod blanditiis.\nItaque aspernatur provident. Aliquam sint dolorum adipisci odio. Soluta hic fugit magnam quo. Omnis cum culpa et magni autem qui tenetur.\nEius soluta aliquam quo odio inventore et. In assumenda molestias recusandae excepturi voluptate ut pariatur. Nobis fugit omnis quidem nesciunt. Molestias odio dignissimos esse rem eveniet tempora distinctio autem ipsa. Laboriosam ex nostrum rerum maxime. Debitis perferendis rem officia alias commodi et.",
-        "model": "3",
-        "brand": "Cadillac",
-        "id": "3"
-    }, {
-        "createdAt": "2024-07-16T17:26:39.774Z",
-        "name": "General Mobile",
-        "image": "https://loremflickr.com/640/480/nightlife",
-        "price": "4.00",
-        "description": "Architecto maiores culpa similique numquam veniam delectus sequi sint illum. Aliquam sunt magnam sunt dolore sint iste tempore facilis explicabo. Eius totam eius corporis earum expedita ad nihil voluptatibus sint. Quae at quibusdam nostrum. Omnis voluptatum tenetur praesentium quibusdam accusamus. Iusto quod blanditiis.\nItaque aspernatur provident. Aliquam sint dolorum adipisci odio. Soluta hic fugit magnam quo. Omnis cum culpa et magni autem qui tenetur.\nEius soluta aliquam quo odio inventore et. In assumenda molestias recusandae excepturi voluptate ut pariatur. Nobis fugit omnis quidem nesciunt. Molestias odio dignissimos esse rem eveniet tempora distinctio autem ipsa. Laboriosam ex nostrum rerum maxime. Debitis perferendis rem officia alias commodi et.",
-        "model": "4",
-        "brand": "Cadillac",
-        "id": "4"
-    },]);
-    const [page, setPage] = useState<number>(1);
+    const [products, setProducts] = useState<ItemProps[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [filterModalVisible, setFilterModalVisible] = useState(false);
@@ -56,31 +18,33 @@ const ItemsListPage = () => {
         item.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const fetchProducts = () => {
-        if (isLoading) return;
-
-        setIsLoading(true);
-        /*axios.get(`https://5fc9346b2af77700165ae514.mockapi.io/products?page=${page}&limit=12`)
-            .then(response => {
-                setProducts(prev => [...prev, ...response.data]);
-                setPage(page + 1);
-            })
-            .catch(error => console.error(error))
-            .finally(() => setIsLoading(false));*/
-        setIsLoading(false);
-    };
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 12;
 
     useEffect(() => {
         fetchProducts();
-    }, []);
+    }, [page]);
 
-    const renderItem = ({ item }: { item: ItemProps }) => (
-        <Item item={item} />
-    );
+    const fetchProducts = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch(`https://5fc9346b2af77700165ae514.mockapi.io/products?page=${page}&limit=${itemsPerPage}`);
+            const data = await response.json();
+            setProducts(prevProducts => [...prevProducts, ...data]);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const handleLoadMore = () => {
         setPage(prevPage => prevPage + 1);
     };
+
+    const renderItem = ({ item }: { item: ItemProps }) => (
+        <Item item={item} />
+    );
 
     const renderFooter = () => {
         if (!isLoading) return null;
@@ -165,8 +129,8 @@ const ItemsListPage = () => {
                 keyExtractor={item => item.id}
                 numColumns={2}
                 initialNumToRender={12}
+                onEndReachedThreshold={0.1}
                 onEndReached={handleLoadMore}
-                onEndReachedThreshold={0.5}
                 ListFooterComponent={renderFooter}
             />
             {renderFilterModal()}
