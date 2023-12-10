@@ -5,11 +5,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/core';
 import { ItemProps, RootStackParamList } from '../../types';
 import Item from '../../components/item';
+import { Searchbar } from 'react-native-paper';
 
 const ItemsListPage = () => {
     const [products, setProducts] = useState<ItemProps[]>([{
         "createdAt": "2023-07-16T17:26:39.774Z",
-        "name": "Smart Golf 1",
+        "name": "iPhone 15",
         "image": "https://loremflickr.com/640/480/nightlife",
         "price": "1.00",
         "description": "Architecto maiores culpa similique numquam veniam delectus sequi sint illum. Aliquam sunt magnam sunt dolore sint iste tempore facilis explicabo. Eius totam eius corporis earum expedita ad nihil voluptatibus sint. Quae at quibusdam nostrum. Omnis voluptatum tenetur praesentium quibusdam accusamus. Iusto quod blanditiis.\nItaque aspernatur provident. Aliquam sint dolorum adipisci odio. Soluta hic fugit magnam quo. Omnis cum culpa et magni autem qui tenetur.\nEius soluta aliquam quo odio inventore et. In assumenda molestias recusandae excepturi voluptate ut pariatur. Nobis fugit omnis quidem nesciunt. Molestias odio dignissimos esse rem eveniet tempora distinctio autem ipsa. Laboriosam ex nostrum rerum maxime. Debitis perferendis rem officia alias commodi et.",
@@ -18,7 +19,7 @@ const ItemsListPage = () => {
         "id": "1"
     }, {
         "createdAt": "2023-07-16T17:26:39.774Z",
-        "name": "Smart Golf 2",
+        "name": "iPhone 15 Pro",
         "image": "https://loremflickr.com/640/480/nightlife",
         "price": "2.00",
         "description": "Architecto maiores culpa similique numquam veniam delectus sequi sint illum. Aliquam sunt magnam sunt dolore sint iste tempore facilis explicabo. Eius totam eius corporis earum expedita ad nihil voluptatibus sint. Quae at quibusdam nostrum. Omnis voluptatum tenetur praesentium quibusdam accusamus. Iusto quod blanditiis.\nItaque aspernatur provident. Aliquam sint dolorum adipisci odio. Soluta hic fugit magnam quo. Omnis cum culpa et magni autem qui tenetur.\nEius soluta aliquam quo odio inventore et. In assumenda molestias recusandae excepturi voluptate ut pariatur. Nobis fugit omnis quidem nesciunt. Molestias odio dignissimos esse rem eveniet tempora distinctio autem ipsa. Laboriosam ex nostrum rerum maxime. Debitis perferendis rem officia alias commodi et.",
@@ -27,16 +28,16 @@ const ItemsListPage = () => {
         "id": "2"
     }, {
         "createdAt": "2023-07-16T17:26:39.774Z",
-        "name": "Smart Golf 3",
+        "name": "Samsung Galaxy S20",
         "image": "https://loremflickr.com/640/480/nightlife",
         "price": "3.00",
         "description": "Architecto maiores culpa similique numquam veniam delectus sequi sint illum. Aliquam sunt magnam sunt dolore sint iste tempore facilis explicabo. Eius totam eius corporis earum expedita ad nihil voluptatibus sint. Quae at quibusdam nostrum. Omnis voluptatum tenetur praesentium quibusdam accusamus. Iusto quod blanditiis.\nItaque aspernatur provident. Aliquam sint dolorum adipisci odio. Soluta hic fugit magnam quo. Omnis cum culpa et magni autem qui tenetur.\nEius soluta aliquam quo odio inventore et. In assumenda molestias recusandae excepturi voluptate ut pariatur. Nobis fugit omnis quidem nesciunt. Molestias odio dignissimos esse rem eveniet tempora distinctio autem ipsa. Laboriosam ex nostrum rerum maxime. Debitis perferendis rem officia alias commodi et.",
         "model": "3",
         "brand": "Cadillac",
         "id": "3"
-    },{
+    }, {
         "createdAt": "2023-07-16T17:26:39.774Z",
-        "name": "Smart Golf 3",
+        "name": "General Mobile",
         "image": "https://loremflickr.com/640/480/nightlife",
         "price": "4.00",
         "description": "Architecto maiores culpa similique numquam veniam delectus sequi sint illum. Aliquam sunt magnam sunt dolore sint iste tempore facilis explicabo. Eius totam eius corporis earum expedita ad nihil voluptatibus sint. Quae at quibusdam nostrum. Omnis voluptatum tenetur praesentium quibusdam accusamus. Iusto quod blanditiis.\nItaque aspernatur provident. Aliquam sint dolorum adipisci odio. Soluta hic fugit magnam quo. Omnis cum culpa et magni autem qui tenetur.\nEius soluta aliquam quo odio inventore et. In assumenda molestias recusandae excepturi voluptate ut pariatur. Nobis fugit omnis quidem nesciunt. Molestias odio dignissimos esse rem eveniet tempora distinctio autem ipsa. Laboriosam ex nostrum rerum maxime. Debitis perferendis rem officia alias commodi et.",
@@ -48,6 +49,12 @@ const ItemsListPage = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+    const [searchQuery, setSearchQuery] = useState<string>('');
+    const onChangeSearch = (query: string) => setSearchQuery(query);
+    const filteredProducts = products.filter(item =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     const fetchProducts = () => {
         if (isLoading) return;
@@ -68,7 +75,7 @@ const ItemsListPage = () => {
     }, []);
 
     const renderItem = ({ item }: { item: ItemProps }) => (
-        <Item item={item}  />
+        <Item item={item} />
     );
 
     const handleLoadMore = () => {
@@ -81,22 +88,34 @@ const ItemsListPage = () => {
     };
 
     return (
-        <FlatList
-            data={products}
-            renderItem={renderItem}
-            keyExtractor={item => item.id}
-            numColumns={2}
-            initialNumToRender={12}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={renderFooter}
-        />
+        <>
+            <Searchbar
+                placeholder="Search"
+                onChangeText={onChangeSearch}
+                value={searchQuery}
+                style={styles.searchBar}
+            />
+            <FlatList
+                data={filteredProducts}
+                renderItem={renderItem}
+                keyExtractor={item => item.id}
+                numColumns={2}
+                initialNumToRender={12}
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={0.5}
+                ListFooterComponent={renderFooter}
+            />
+        </>
     );
 };
 
 const styles = StyleSheet.create({
     loader: {
         marginVertical: 20,
+    },
+    searchBar: {
+        margin: 10,
+        borderRadius: 5,
     },
     favouriteButton: {
         padding: 10,
