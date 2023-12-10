@@ -19,6 +19,12 @@ const CartPage: React.FC = () => {
         cartContext?.decreaseItemCount(productId);
     };
 
+    const totalPrice = cartContext?.cartItems.reduce((acc, item) => {
+        const itemPrice = parseFloat(item.price);
+        const itemCount = item.itemCountInCart ?? 0;
+        return acc + itemPrice * itemCount;
+    }, 0)?.toFixed(2);
+
     const renderItem = ({ item }: { item: ItemProps }) => (
         <TouchableOpacity onPress={() => navigation.navigate('ItemDetailsPage', { item })}>
             <View style={styles.card}>
@@ -57,11 +63,16 @@ const CartPage: React.FC = () => {
             />
             {
                 cartContext && cartContext.cartItems.length > 0 &&
-                <TouchableOpacity onPress={() => { }} style={styles.completeButton}>
-                    <View></View>
-                    <Text style={styles.completeButtonText}>Complete</Text>
-                    <MaterialCommunityIcons name="arrow-right" size={32} color="white" />
-                </TouchableOpacity>
+                <View style={styles.completeSection}>
+                    <Text style={styles.totalPriceText}>Total: {totalPrice} ₺</Text>
+
+                    <TouchableOpacity onPress={() => { }} style={styles.completeButton}>
+                        <View></View>
+                        <Text style={styles.completeButtonText}>Complete</Text>
+                        <MaterialCommunityIcons name="arrow-right" size={32} color="white" />
+                    </TouchableOpacity>
+                </View>
+
             }
         </View>
     );
@@ -70,7 +81,6 @@ const CartPage: React.FC = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 10,
         backgroundColor: '#f5f5f5',
     },
     iconButton: {
@@ -133,17 +143,30 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginVertical: 5,
     },
+    completeSection: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        paddingVertical: 16,
+    },
+    totalPriceText: {
+        fontSize: 24,
+        marginHorizontal: 10,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
     completeButton: {
         display: 'flex',
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: 10,
         backgroundColor: '#FF6000',
         textAlign: 'center',
-        marginRight: 10,
         borderRadius: 12,
-        marginBottom: 20,
+        marginHorizontal: 10,
     },
     completeButtonText: {
         color: '#fff',
