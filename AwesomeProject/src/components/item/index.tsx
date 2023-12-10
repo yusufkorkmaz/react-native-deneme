@@ -5,10 +5,11 @@ import { CartContext, CartContextType } from "../../providers/CartContext";
 import { FavoritesContext, FavoritesContextType } from "../../providers/FavoritesContext";
 import { useContext, useRef } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Image, View, Text, StyleSheet } from "react-native";
+import { Image, View, Text, StyleSheet, Dimensions } from "react-native";
 import { IconButton } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Animated } from 'react-native';
+import { windowSize } from "../../consts";
 
 type ItemComponentProps = {
     item: ItemProps;
@@ -21,18 +22,17 @@ const ItemComponent: React.FC<ItemComponentProps> = ({ item }) => {
     const opacityValue = useRef(new Animated.Value(1)).current;
     const scaleValue = useRef(new Animated.Value(1)).current;
 
-
     const handleFavouritePress = () => {
         if (!isFavourite(item)) {
             Animated.parallel([
                 Animated.timing(scaleValue, {
-                    toValue: 1.2,
-                    duration: 200,
+                    toValue: 1.5,
+                    duration: 150,
                     useNativeDriver: true,
                 }),
                 Animated.timing(opacityValue, {
                     toValue: 0.5,
-                    duration: 200,
+                    duration: 150,
                     useNativeDriver: true,
                 }),
             ]).start(() => {
@@ -68,9 +68,11 @@ const ItemComponent: React.FC<ItemComponentProps> = ({ item }) => {
                 <Text style={styles.name}>{item.name}</Text>
                 <Text style={styles.price}>{`${item.price} ₺`}</Text>
                 <View style={styles.buttonsSection}>
-                    <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.button}>
-                        <Text style={styles.buttonText}>Add to Cart</Text>
-                    </TouchableOpacity>
+                    <View style={{ flex: 1 }}>
+                        <TouchableOpacity onPress={() => handleAddToCart(item)} style={styles.button}>
+                            <Text style={styles.buttonText}>Add to Cart</Text>
+                        </TouchableOpacity>
+                    </View>
                     <TouchableOpacity onPress={handleFavouritePress}>
                         <Animated.View
                             style={{
@@ -98,12 +100,13 @@ const ItemComponent: React.FC<ItemComponentProps> = ({ item }) => {
 };
 
 const styles = StyleSheet.create({
-    loader: {
-        marginVertical: 20,
-    },
-    favouriteButton: {
-    },
+
     card: {
+        width: windowSize.width * 0.45,
+        height: windowSize.height * 0.3,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
         margin: 10,
         padding: 10,
         borderRadius: 5,
@@ -111,8 +114,7 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         backgroundColor: '#fff',
     },
-    buttonsSection:
-    {
+    buttonsSection: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -136,6 +138,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#FF6000',
         padding: 10,
         borderRadius: 5,
+    },
+    favouriteButton: {
+
     },
     buttonText: {
         color: '#fff',

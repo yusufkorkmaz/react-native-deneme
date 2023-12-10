@@ -23,7 +23,7 @@ const CartPage: React.FC = () => {
         <TouchableOpacity onPress={() => navigation.navigate('ItemDetailsPage', { item })}>
             <View style={styles.card}>
                 <Image source={{ uri: item.image }} style={styles.image} />
-                <View>
+                <View style={styles.itemNameAndPriceSection}>
                     <Text style={styles.name}>{item.name}</Text>
                     <Text style={styles.price}>{`${item.price} ₺`}</Text>
                 </View>
@@ -109,6 +109,10 @@ const styles = StyleSheet.create({
         margin: 10,
         borderRadius: 10,
     },
+    itemNameAndPriceSection: {
+        flex: 1,
+        marginLeft: 10,
+    },
     name: {
         fontSize: 16,
         fontWeight: 'bold',
@@ -122,7 +126,6 @@ const styles = StyleSheet.create({
     count: {
         fontSize: 24,
         color: '#000',
-        marginBottom: 5,
     },
     button: {
         backgroundColor: '#FF6000',
@@ -140,7 +143,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginRight: 10,
         borderRadius: 12,
-        marginBottom: 10,
+        marginBottom: 20,
     },
     completeButtonText: {
         color: '#fff',

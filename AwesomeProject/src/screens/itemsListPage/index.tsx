@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import axios from 'axios';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/core';
-import { ItemProps, RootStackParamList } from '../../types';
+import { ItemProps } from '../../types';
 import Item from '../../components/item';
 import { Searchbar } from 'react-native-paper';
 
 const ItemsListPage = () => {
     const [products, setProducts] = useState<ItemProps[]>([{
         "createdAt": "2023-07-16T17:26:39.774Z",
-        "name": "iPhone 15",
+        "name": "iPhone 15 asdasd asd asda asdsasd",
         "image": "https://loremflickr.com/640/480/nightlife",
         "price": "1.00",
         "description": "Architecto maiores culpa similique numquam veniam delectus sequi sint illum. Aliquam sunt magnam sunt dolore sint iste tempore facilis explicabo. Eius totam eius corporis earum expedita ad nihil voluptatibus sint. Quae at quibusdam nostrum. Omnis voluptatum tenetur praesentium quibusdam accusamus. Iusto quod blanditiis.\nItaque aspernatur provident. Aliquam sint dolorum adipisci odio. Soluta hic fugit magnam quo. Omnis cum culpa et magni autem qui tenetur.\nEius soluta aliquam quo odio inventore et. In assumenda molestias recusandae excepturi voluptate ut pariatur. Nobis fugit omnis quidem nesciunt. Molestias odio dignissimos esse rem eveniet tempora distinctio autem ipsa. Laboriosam ex nostrum rerum maxime. Debitis perferendis rem officia alias commodi et.",
