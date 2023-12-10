@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { StyleSheet, FlatList, ActivityIndicator, Modal, View, Button } from 'react-native';
 import axios from 'axios';
 import { ItemProps } from '../../types';
 import Item from '../../components/item';
-import { Searchbar } from 'react-native-paper';
+import { IconButton, RadioButton, Searchbar, Text } from 'react-native-paper';
 
 const ItemsListPage = () => {
     const [products, setProducts] = useState<ItemProps[]>([{
-        "createdAt": "2023-07-16T17:26:39.774Z",
+        "createdAt": "2021-07-16T17:26:39.774Z",
         "name": "iPhone 15 asdasd asd asda asdsasd",
         "image": "https://loremflickr.com/640/480/nightlife",
         "price": "1.00",
@@ -16,7 +16,7 @@ const ItemsListPage = () => {
         "brand": "Cadillac",
         "id": "1"
     }, {
-        "createdAt": "2023-07-16T17:26:39.774Z",
+        "createdAt": "2022-07-16T17:26:39.774Z",
         "name": "iPhone 15 Pro",
         "image": "https://loremflickr.com/640/480/nightlife",
         "price": "2.00",
@@ -34,7 +34,7 @@ const ItemsListPage = () => {
         "brand": "Cadillac",
         "id": "3"
     }, {
-        "createdAt": "2023-07-16T17:26:39.774Z",
+        "createdAt": "2024-07-16T17:26:39.774Z",
         "name": "General Mobile",
         "image": "https://loremflickr.com/640/480/nightlife",
         "price": "4.00",
@@ -45,9 +45,13 @@ const ItemsListPage = () => {
     },]);
     const [page, setPage] = useState<number>(1);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
     const [searchQuery, setSearchQuery] = useState<string>('');
+    const [filterModalVisible, setFilterModalVisible] = useState(false);
+    const [value, setValue] = React.useState('lowToHigh');
+
     const onChangeSearch = (query: string) => setSearchQuery(query);
+    const toggleFilterModal = () => setFilterModalVisible(!filterModalVisible);
+
     const filteredProducts = products.filter(item =>
         item.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -83,14 +87,78 @@ const ItemsListPage = () => {
         return <ActivityIndicator style={styles.loader} size="large" color="#0000ff" />;
     };
 
+    const sortByPrice = (ascending: boolean) => {
+        const sortedProducts = [...products].sort((a: ItemProps, b: ItemProps) => {
+            if (ascending) {
+                return parseFloat(a.price) - parseFloat(b.price);
+            } else {
+                return parseFloat(b.price) - parseFloat(a.price);
+            }
+        });
+        setProducts(sortedProducts);
+        setFilterModalVisible(false);
+    };
+
+    const sortByDate = (newestFirst: boolean) => {
+        const sortedProducts = [...products].sort((a: ItemProps, b: ItemProps) => {
+            const dateA = new Date(a.createdAt);
+            const dateB = new Date(b.createdAt);
+            if (newestFirst) {
+                return dateB.getTime() - dateA.getTime();
+            } else {
+                return dateA.getTime() - dateB.getTime();
+            }
+        });
+        setProducts(sortedProducts);
+        setFilterModalVisible(false);
+    };
+
+    const handlePress = (newValue: string) => {
+        setValue(newValue);
+        switch (newValue) {
+            case 'lowToHigh':
+                sortByPrice(true);
+                break;
+            case 'highToLow':
+                sortByPrice(false);
+                break;
+            case 'newToOld':
+                sortByDate(true);
+                break;
+            case 'oldToNew':
+                sortByDate(false);
+                break;
+            default:
+                break;
+        }
+        setFilterModalVisible(false);
+    };
+
+    const renderFilterModal = () => (
+        <Modal visible={filterModalVisible} onRequestClose={() => setFilterModalVisible(false)}>
+            <View style={{ padding: 20 }}>
+                <RadioButton.Group onValueChange={newValue => handlePress(newValue)} value={value}>
+                    <RadioButton.Item label="Price low to high" value="lowToHigh" />
+                    <RadioButton.Item label="Price high to low" value="highToLow" />
+                    <RadioButton.Item label="New to old" value="newToOld" />
+                    <RadioButton.Item label="Old to new" value="oldToNew" />
+                </RadioButton.Group>
+                <Button title="Close" onPress={() => setFilterModalVisible(false)} />
+            </View>
+        </Modal>
+    );
+
     return (
         <>
-            <Searchbar
-                placeholder="Search"
-                onChangeText={onChangeSearch}
-                value={searchQuery}
-                style={styles.searchBar}
-            />
+            <View style={styles.searchBarAndFilterButtonSection}>
+                <Searchbar
+                    placeholder="Search"
+                    onChangeText={onChangeSearch}
+                    value={searchQuery}
+                    style={styles.searchBar}
+                />
+                <IconButton iconColor='grey' icon="filter-outline" size={40} onPress={toggleFilterModal} />
+            </View>
             <FlatList
                 data={filteredProducts}
                 renderItem={renderItem}
@@ -101,6 +169,7 @@ const ItemsListPage = () => {
                 onEndReachedThreshold={0.5}
                 ListFooterComponent={renderFooter}
             />
+            {renderFilterModal()}
         </>
     );
 };
@@ -111,8 +180,36 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         margin: 10,
+        flex: 1,
+        height: 55,
         borderRadius: 5,
         backgroundColor: '#ffffff',
+    },
+    searchBarAndFilterButtonSection: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    filterButton: {
+        margin: 10,
+        borderRadius: 5,
+        height: 55,
+
+        backgroundColor: '#ffffff',
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
     },
     favouriteButton: {
         padding: 10,
